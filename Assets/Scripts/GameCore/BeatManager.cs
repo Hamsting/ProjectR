@@ -6,27 +6,27 @@ namespace ProjectR
 {
     public class BeatManager : Singleton<BeatManager>
     {
-        [SerializeField]
+        [SerializeField, InspectorReadOnly]
         private int bar = 0;
-        [SerializeField]
+        [SerializeField, InspectorReadOnly]
         private float beat = 0.0f;
-        [SerializeField]
+        [SerializeField, InspectorReadOnly]
         private float position = 0.0f;
-        [SerializeField]
+        [SerializeField, InspectorReadOnly]
         private float positionWithSpeed = 0.0f;
-        [SerializeField]
+        [SerializeField, InspectorReadOnly]
         private float bpm = 60.0f;
-        [SerializeField]
+        [SerializeField, InspectorReadOnly]
         private float originalBPM = 60.0f;
-        [SerializeField]
+        [SerializeField, InspectorReadOnly]
         private float beatPerSecond = 60.0f / 60.0f * GlobalDefines.BeatPerBar;
-        [SerializeField]
+        [SerializeField, Range(0.5f, 10.0f)]
         private float gameSpeed = 2.0f;
-        [SerializeField]
+        [SerializeField, InspectorReadOnly]
         private List<BPMInfo> bpmInfos;
-        [SerializeField]
+        [SerializeField, InspectorReadOnly]
         private int bpmInfoLastIndex = -1;
-        [SerializeField]
+        [SerializeField, InspectorReadOnly]
         private float barToRailLength = GlobalDefines.RailLength / GlobalDefines.DefaultBarCount * (60.0f / 60.0f) * 2.0f;
 
         public int Bar
@@ -137,7 +137,6 @@ namespace ProjectR
                     }
 
                     CurrentBPM = nextInfo.bpm;
-                    // position -= (barDiff * (bpmDiffRatio - 1.0f)) * barToRailLength;
                     position = nextInfo.position + fixedBarDiff * barToRailLength;
                     ++bpmInfoLastIndex;
                     Debug.Log("" + barDiff + ", " + fixedBarDiff);
@@ -211,6 +210,20 @@ namespace ProjectR
         {
             return ((float)_bar1 + _beat1 / GlobalDefines.BeatPerBar) -
                    ((float)_bar2 + _beat2 / GlobalDefines.BeatPerBar);
+        }
+
+        public float GetBPMWithBarBeat(int _bar, float _beat = 0.0f)
+        {
+            for (int i = bpmInfos.Count - 1; i >= 0; --i)
+            {
+                BPMInfo info = bpmInfos[i];
+                int infoStartBar = (info.beat == 0.0f) ? info.bar : info.bar + 1;
+                if (infoStartBar <= _bar)
+                {
+                    return info.bpm; 
+                }
+            }
+            return 60.0f;
         }
     }
 }

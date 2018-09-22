@@ -26,7 +26,7 @@ namespace ProjectR
             BeatManager.Instance.AddNewBPMInfo(22,  0.0f, 200.0f);
             BeatManager.Instance.AddNewBPMInfo(23, 24.0f, 100.0f);
             */
-            /*
+            
             BeatManager.Instance.AddNewBPMInfo( 0, 0.0f,  30.0f);
             BeatManager.Instance.AddNewBPMInfo( 1, 0.0f, 120.0f);
             BeatManager.Instance.AddNewBPMInfo( 2, 0.0f,  30.0f);
@@ -40,14 +40,14 @@ namespace ProjectR
             BeatManager.Instance.AddNewBPMInfo(10, 0.0f,  30.0f);
             BeatManager.Instance.AddNewBPMInfo(11, 0.0f, 240.0f);
             BeatManager.Instance.AddNewBPMInfo(12, 0.0f,  30.0f);
-            */
             
+            /*
             BeatManager.Instance.AddNewBPMInfo( 0, 0.0f,  90.0f);
             BeatManager.Instance.AddNewBPMInfo( 4, .0f,  15.0f);
             BeatManager.Instance.AddNewBPMInfo( 6, 0.0f, 140.0f);
             BeatManager.Instance.AddNewBPMInfo( 7, 0.0f, 120.0f);
             BeatManager.Instance.AddNewBPMInfo(16, 0.0f,  90.0f);
-            
+            */
             for (int i = 0; i < 36; ++i)
             {
                 GameObject barLine = GameObject.Instantiate<GameObject>(barLinePrefab, rail);
@@ -57,8 +57,11 @@ namespace ProjectR
             for (int i = 0; i < 36 * 4; ++i)
             {
                 GameObject note = GameObject.Instantiate<GameObject>(notePrefab, rail);
-                note.GetComponent<NoteRenderer>().bar = i / 4;
-                note.GetComponent<NoteRenderer>().beat = (float)(i % 4) / 4.0f * GlobalDefines.BeatPerBar;
+                NoteRenderer ren = note.GetComponent<NoteRenderer>();
+                ren.bar = i / 4;
+                ren.beat = (float)(i % 4) / 4.0f * GlobalDefines.BeatPerBar;
+                ren.lineNumber = i % 4;
+                ren.targetBPM = BeatManager.Instance.GetBPMWithBarBeat(ren.bar, ren.beat);
             }
         }
 
