@@ -95,8 +95,8 @@ namespace ProjectR
 
         private void Update()
         {
-            UpdateBPM();
             UpdateBarAndBeat();
+            UpdateBPM();
         }
 
         private void UpdateBarAndBeat()
@@ -137,8 +137,10 @@ namespace ProjectR
                     }
 
                     CurrentBPM = nextInfo.bpm;
-                    position += fixedBarDiff * barToRailLength;
+                    // position -= (barDiff * (bpmDiffRatio - 1.0f)) * barToRailLength;
+                    position = nextInfo.position + fixedBarDiff * barToRailLength;
                     ++bpmInfoLastIndex;
+                    Debug.Log("" + barDiff + ", " + fixedBarDiff);
                 }
             }
         }
