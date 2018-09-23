@@ -40,7 +40,8 @@ namespace ProjectR
             BeatManager.Instance.AddNewBPMInfo(10, 0.0f,  30.0f);
             BeatManager.Instance.AddNewBPMInfo(11, 0.0f, 240.0f);
             BeatManager.Instance.AddNewBPMInfo(12, 0.0f,  30.0f);
-            
+            BeatManager.Instance.AddNewBPMInfo(12, 0.0f, 240.0f);
+
             /*
             BeatManager.Instance.AddNewBPMInfo( 0, 0.0f,  90.0f);
             BeatManager.Instance.AddNewBPMInfo( 4, .0f,  15.0f);

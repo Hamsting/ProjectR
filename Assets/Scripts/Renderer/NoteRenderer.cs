@@ -34,6 +34,11 @@ namespace ProjectR
             float correction = noteDefaultScale.y * (targetBPM / 60.0f - 1.0f) * (BeatManager.Instance.GameSpeed - 1.0f) * 0.15f;
             noteScale.y = Mathf.Clamp(noteDefaultScale.y + correction * 0.33f, 0.2f, 10.0f);
             this.transform.localScale = noteScale;
+
+            if (BeatManager.GetBarDifference(bar, beat, BeatManager.Instance.Bar, BeatManager.Instance.Beat) <= 0.0f)
+            {
+                Destroy(this.gameObject);
+            }
         }
     }
 }
