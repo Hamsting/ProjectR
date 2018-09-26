@@ -182,7 +182,8 @@ namespace ProjectR
             if (bpmInfos.Count > 1 && lastInfo != null)
             {
                 float pivotPos = lastInfo.position;
-                float barDiff = GetBarDifference(_bar, _beat, lastInfo.bar, lastInfo.beat);
+                int lastInfoStartBar = (lastInfo.beat == 0.0f) ? lastInfo.bar : lastInfo.bar + 1;
+                float barDiff = GetBarDifference(_bar, _beat, lastInfoStartBar, 0.0f);
                 info.position = pivotPos + (barDiff * 
                                 (GlobalDefines.RailLength / GlobalDefines.DefaultBarCount * (lastInfo.bpm / 60.0f)));
             }
@@ -224,6 +225,22 @@ namespace ProjectR
                 }
             }
             return 60.0f;
+        }
+
+        //TEST
+        public bool IsPossibleBarBeat(int _bar, float _beat)
+        {
+            foreach (BPMInfo info in bpmInfos)
+            {
+                if (info.bar > _bar)
+                    return true;
+                else if (info.bar != _bar)
+                    continue;
+
+                if (info.beat <= _beat)
+                    return false;
+            }
+            return true;
         }
     }
 }

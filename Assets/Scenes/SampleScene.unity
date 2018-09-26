@@ -1494,7 +1494,7 @@ MonoBehaviour:
   bpm: 60
   originalBPM: 60
   beatPerSecond: 96
-  gameSpeed: 3.87
+  gameSpeed: 4.64
   bpmInfos: []
   bpmInfoLastIndex: -1
   barToRailLength: 6.25
