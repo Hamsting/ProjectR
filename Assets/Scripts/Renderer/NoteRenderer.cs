@@ -11,7 +11,7 @@ namespace ProjectR
         public int lineNumber = 0;
         public float targetBPM = 60.0f;
 
-        private float position = 0.0f;
+        private double position = 0.0f;
         private Vector3 notePos = Vector3.zero;
         private Vector3 noteScale = Vector3.one;
         private Vector3 noteDefaultScale = Vector3.one;
@@ -28,7 +28,7 @@ namespace ProjectR
         private void Update()
         {
             notePos.x = ((float)((lineNumber % 4) * 2 + 1) / 8.0f - 0.5f) * GlobalDefines.RailWidth;
-            notePos.y = (position - BeatManager.Instance.Position) * BeatManager.Instance.GameSpeed;
+            notePos.y = (float)(position - BeatManager.Instance.Position) * BeatManager.Instance.GameSpeed;
             this.transform.localPosition = notePos;
             
             float correction = noteDefaultScale.y * (targetBPM / 60.0f - 1.0f) * (BeatManager.Instance.GameSpeed - 1.0f) * 0.15f;

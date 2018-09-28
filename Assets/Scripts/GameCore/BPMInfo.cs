@@ -10,6 +10,7 @@ namespace ProjectR
         public float bpm = 60.0f;
         public int bar = 0;
         public float beat = 0.0f;
-        public float position = 0.0f;
+        public double position = 0.0f;
+        public bool stopEffect = false;
     }
 }

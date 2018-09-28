@@ -11,9 +11,9 @@ namespace ProjectR
         [SerializeField, InspectorReadOnly]
         private float beat = 0.0f;
         [SerializeField, InspectorReadOnly]
-        private float position = 0.0f;
+        private double position = 0.0f;
         [SerializeField, InspectorReadOnly]
-        private float positionWithSpeed = 0.0f;
+        private double positionWithSpeed = 0.0f;
         [SerializeField, InspectorReadOnly]
         private float bpm = 60.0f;
         [SerializeField, InspectorReadOnly]
@@ -28,6 +28,7 @@ namespace ProjectR
         private int bpmInfoLastIndex = -1;
         [SerializeField, InspectorReadOnly]
         private float barToRailLength = GlobalDefines.RailLength / GlobalDefines.DefaultBarCount * (60.0f / 60.0f) * 2.0f;
+        private bool isStopEffect = false;
 
         public int Bar
         {
@@ -43,7 +44,7 @@ namespace ProjectR
                 return beat;
             }
         }
-        public float Position
+        public double Position
         {
             get
             {
@@ -136,6 +137,7 @@ namespace ProjectR
                         beat = beat % (float)GlobalDefines.BeatPerBar;
                     }
 
+                    isStopEffect = nextInfo.stopEffect;
                     CurrentBPM = nextInfo.bpm;
                     position = nextInfo.position + fixedBarDiff * barToRailLength;
                     ++bpmInfoLastIndex;
@@ -147,17 +149,26 @@ namespace ProjectR
         private void OnBPMChanged()
         {
             beatPerSecond = bpm / 60.0f * GlobalDefines.BeatPerBar;
-            barToRailLength = GlobalDefines.RailLength / GlobalDefines.DefaultBarCount * (bpm / 60.0f);
-            Debug.LogError("BPM Changed : " + bpm + ", Position : " + position + ", Bar/Beat : " + bar + "/" + beat);
+
+            if (isStopEffect)
+                barToRailLength = 0.0f;
+            else
+                barToRailLength = GlobalDefines.RailLength / GlobalDefines.DefaultBarCount * (bpm / 60.0f);
+
+            Debug.LogError("BPM Changed : " + bpm + 
+                         ", Position : " + position + 
+                         ", Bar/Beat : " + bar + "/" + beat + 
+                         ", Stop : " + isStopEffect);
         }
-        
-        public void AddNewBPMInfo(int _bar, float _beat, float _bpm)
+
+        public void AddNewBPMInfo(int _bar, float _beat, float _bpm, bool _stopEffect = false)
         {
             BPMInfo info = new BPMInfo()
             {
                 bar = _bar,
                 beat = _beat,
-                bpm = _bpm
+                bpm = _bpm,
+                stopEffect = _stopEffect
             };
 
             BPMInfo lastInfo = null;
@@ -181,17 +192,22 @@ namespace ProjectR
 
             if (bpmInfos.Count > 1 && lastInfo != null)
             {
-                float pivotPos = lastInfo.position;
-                int lastInfoStartBar = (lastInfo.beat == 0.0f) ? lastInfo.bar : lastInfo.bar + 1;
-                float barDiff = GetBarDifference(_bar, _beat, lastInfoStartBar, 0.0f);
-                info.position = pivotPos + (barDiff * 
+                double pivotPos = lastInfo.position;
+                if (lastInfo.stopEffect)
+                    info.position = pivotPos;
+                else
+                {
+                    int lastInfoStartBar = (lastInfo.beat == 0.0f) ? lastInfo.bar : lastInfo.bar + 1;
+                    float barDiff = GetBarDifference(_bar, _beat, lastInfoStartBar, 0.0f);
+                    info.position = pivotPos + (barDiff *
                                 (GlobalDefines.RailLength / GlobalDefines.DefaultBarCount * (lastInfo.bpm / 60.0f)));
+                }
             }
             else
                 info.position = 0.0f;           
         }
 
-        public float BarBeatToPosition(int _bar, float _beat = 0.0f)
+        public double BarBeatToPosition(int _bar, float _beat = 0.0f)
         {
             for (int i = bpmInfos.Count - 1; i >= 0; --i)
             {
@@ -199,8 +215,11 @@ namespace ProjectR
                 int infoStartBar = (info.beat == 0.0f) ? info.bar : info.bar + 1;
                 if (infoStartBar <= _bar)
                 {
-                    return info.position + GetBarDifference(_bar, _beat, infoStartBar, 0.0f) * 
-                           (GlobalDefines.RailLength / GlobalDefines.DefaultBarCount * (info.bpm / 60.0f));
+                    if (info.stopEffect)
+                        return info.position;
+                    else
+                        return info.position + GetBarDifference(_bar, _beat, infoStartBar, 0.0f) * 
+                            (GlobalDefines.RailLength / GlobalDefines.DefaultBarCount * (info.bpm / 60.0f));
                 }
             }
 
@@ -237,7 +256,7 @@ namespace ProjectR
                 else if (info.bar != _bar)
                     continue;
 
-                if (info.beat <= _beat)
+                if (info.beat != 0.0f && info.beat <= _beat)
                     return false;
             }
             return true;

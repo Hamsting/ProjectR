@@ -8,7 +8,7 @@ namespace ProjectR
     {
         public int bar = 0;
 
-        private float position = 0.0f;
+        private double position = 0.0f;
 
 
 
@@ -19,7 +19,7 @@ namespace ProjectR
 
         private void Update()
         {
-            float yPos = (position - BeatManager.Instance.Position) * BeatManager.Instance.GameSpeed;
+            float yPos = (float)(position - BeatManager.Instance.Position) * BeatManager.Instance.GameSpeed;
             this.transform.localPosition = new Vector3(0.0f, yPos, 0.0f);
 
 
