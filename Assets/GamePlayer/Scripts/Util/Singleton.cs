@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace ProjectR
+namespace ProjectR.GamePlayer
 {
     public class Singleton<T> : MonoBehaviour where T : MonoBehaviour
     {

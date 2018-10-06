@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace ProjectR
+namespace ProjectR.GamePlayer
 {
     public class NoteRenderer : MonoBehaviour
     {
